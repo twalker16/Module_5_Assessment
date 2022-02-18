@@ -1,0 +1,126 @@
+Imagine you are opening a pet adoption agency where you will rescue and care for animals and try to find them owners who are a good match for them.
+
+Design a database with at least 4 tables for your pet adoption agency. Include any relationships between tables where you feel they are needed.
+
+For example, you’ll need an animals table. Perhaps you have an animal species table as well. The relationship between animal species and animals is one-to-many. For every one species in the species table, you could, at most, have many animals of that species in the animals table.
+
+Submit a diagram of your database for this project.
+
+
+
+pet species
+pet breed
+pet size
+pet name
+pet age
+good with young kids boolean
+pet energy (Very active, active, passive)
+pet dependency (dependent, independent, semi-dependent)
+pet special conditions
+
+owner desired species
+owner desired breed (optional)
+owner desired pet size
+has young kids boolean
+desired pet energy
+desired dependency
+has ability to meet special conditions
+
+
+
+Pet table
+pet_id
+species_id
+breed_id
+pet_name
+pet_age
+good_with_kids
+
+
+Species table
+species_id
+species_name
+
+Breed table
+breed_id
+species_id
+breed_size
+breed_energy
+breed_dependency
+
+Owner table
+owner_id
+owner_name
+has_kids
+desired_species_id
+desired_breed_id
+desired_size
+desired_energy
+desired_dependency
+
+special_conditions table
+condtion_id
+condition_name
+condition_needs
+
+Pet_special_conditions table
+pet_special_conditions_id
+condtion_id
+pet_id
+
+owner_special_conditions table
+owner_special_conditions_id
+condtion_id
+owner_id
+
+
+CREATE TABLE pets(
+  pet_id SERIAL PRIMARY KEY,
+  pet_name VARCHAR(40),
+  pet_age INTEGER NOT NULL,
+  species_id INTEGER NOT NULL REFERENCES species(species_id),
+  breed_id INTEGER NOT NULL REFERENCES breed(breed_id),
+  good_with_kids BOOLEAN
+);
+
+CREATE TABLE species(
+  species_id SERIAL PRIMARY KEY,
+  species_name VARCHAR(40)
+);
+
+CREATE TABLE breed(
+  breed_id SERIAL PRIMARY KEY,
+  species_id INTEGER NOT NULL REFERENCES species(species_id),
+  breed_size VARCHAR(20) NOT NULL,
+  breed_energy VARCHAR(20) NOT NULL,
+  breed_dependency VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE special_conditions(
+  condition_id SERIAL PRIMARY KEY,
+  condition_name VARCHAR(40) NOT NULL,
+  condition_needs VARCHAR(2500) NOT NULL
+);
+
+CREATE TABLE pet_special_conditions(
+  pet_special_conditions_id SERIAL PRIMARY KEY,
+  condition_id INTEGER NOT NULL REFERENCES special_conditions(condition_id),
+  pet_id INTEGER NOT NULL REFERENCES pets(pet_id)
+);
+
+CREATE TABLE owner_special_conditions(
+  owner_special_conditions_id SERIAL PRIMARY KEY,
+  condition_id INTEGER NOT NULL REFERENCES special_conditions(condition_id),
+  owner_id INTEGER NOT NULL REFERENCES owners(owner_id)
+);
+
+CREATE TABLE owners(
+  owner_id SERIAL PRIMARY KEY,
+  owner_name VARCHAR(50),
+  has_kids BOOLEAN NOT NULL,
+  desired_species_id INTEGER REFERENCES species(species_id),
+  desired_breed_id INTEGER REFERENCES breed(breed_id),
+  desired_size VARCHAR(20),
+  desired_energy VARCHAR(20),
+  desired_dependency VARCHAR(20) 
+);
